@@ -1,5 +1,7 @@
 # Saf javascript ile fade,slide ve display kullanımı
-    ```
+   
+   ```js
+   
     // fade kullanımı
     fade(item).in(delay)
     fade(item).out(delay)
@@ -14,7 +16,8 @@
     fade(item).up(delay)
     fade(item).down(delay)
     fade(item).toggle(delay)
-    ```
+    
+   ```
 # Yakında eklenecekler
 - Animate
 - Step
