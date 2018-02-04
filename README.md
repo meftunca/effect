@@ -1,4 +1,4 @@
-# Saf javascript ile fade,slide ve animate kullanımı
+# Saf javascript ile fade,slide ve display kullanımı
     ```js
     // fade kullanımı
     fade(item).in(delay)
