@@ -1,5 +1,5 @@
 # Saf javascript ile fade,slide ve display kullanımı
-    ```js
+    ```
     // fade kullanımı
     fade(item).in(delay)
     fade(item).out(delay)
