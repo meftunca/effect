@@ -1,89 +1,80 @@
-var slide = (el) => {
-    this.setup = function (delay, event) {
+let slide = (el) => {
+    let setup = function (delay) {
         window.clearInterval();
-        var hg = el.offsetHeight;
+        let heightDefault = el.offsetHeight;
         return el.style.cssText =
-            "display:block;overflow:hidden; transition: transform 0.4s cubic-bezier(0, 1, 0.5, 1);";
+            "display:block;overflow:hidden;transition: transform " + delay + "ms ease-in-out;";//
     };
     this.effect = true;
-    this.up = function (delay) {
+    this.up = (delay) => {
         if (!delay) {
             delay = 200;
         }
-        this.setup(delay);
-        var padT = Number(window.getComputedStyle(el).paddingBottom.replace("px", ""));
-        var padB = Number(window.getComputedStyle(el).paddingTop.replace("px", ""));
-        var pad = padT + padB;
-        var hg = el.offsetHeight - pad;
-        var s = el.style;
-        el.setAttribute("data-slide", "up");
-        var effect = setInterval(function () {
-            hg -= parseFloat(hg / delay) * 3;
-            s.height = hg + "px";
-            if (hg < 100) {
-                hg -= (hg / delay) * 8;
+        setup(delay);
+        let padT = Number(window.getComputedStyle(el).paddingBottom.replace("px", ""));
+        let padB = Number(window.getComputedStyle(el).paddingTop.replace("px", ""));
+        let pad = padT + padB, i = 0, pMinusBottom = padB, pMinusTop = padT;
+        let heightDefault = el.offsetHeight - pad, ItemHeightCollapse = heightDefault;
+        let itemStyle = el.style;
+        itemStyle.paddingTop = 0;
+        el.dataset.slide = "up";
+        let slideUp = () => {
+            i += Math.PI;
+            ItemHeightCollapse -= heightDefault * Math.PI / delay;
+            pMinusBottom -= padB * Math.PI / delay;
+            pMinusTop -= padT * Math.PI / delay;
+            itemStyle.paddingBottom = pMinusBottom + "px";
+            itemStyle.paddingTop = pMinusTop + "px";
+            itemStyle.height = ItemHeightCollapse + "px";
+            if (i >= delay) {
+                itemStyle.cssText = "display:none";
+                window.clearInterval(run);
             }
-            if (hg <= pad) {
-                s.paddingTop = 0;
-                s.paddingBottom = 0;
-                s.color = "transparent";
-            }
-            if (hg < 2) {
-                s.height = 0;
-                window.clearInterval(effect);
-                setTimeout(function () {
-                    s.borderWidth = "0";
-                    setTimeout(function () {
-                        s.cssText = "";
-                        s.display = "none";
-                    }, 1)
-                }, 1)
-            }
-        }, "fast");
-        return this.down;
+
+        };
+        let run = setInterval(slideUp, "fast");
+        return this;
     };
-    this.down = function (delay) {
+    this.down = (delay) => {
         if (!delay) {
             delay = 200;
         }
         this.effect = false;
-        this.setup(delay);
-        var padT = Number(window.getComputedStyle(el).paddingBottom.replace("px", ""));
-        var padB = Number(window.getComputedStyle(el).paddingTop.replace("px", ""));
-        var hg = Number(window.getComputedStyle(el).height.replace("px", "")),
-            h = 0;
-        var pad = padT + padB;
-        var s = el.style;
-        s.height = 0;
-        s.paddingTop = 0;
-        s.paddingBottom = 0;
-        s.color = "transparent";
-        el.setAttribute("data-slide", "down");
+        setup(delay);
+        let padT = Number(window.getComputedStyle(el).paddingBottom.replace("px", ""));
+        let padB = Number(window.getComputedStyle(el).paddingTop.replace("px", ""));
+        let heightDefault = Number(window.getComputedStyle(el).height.replace("px", "")),
+            ItemHeightCollapse = 0, i = 0
+            , pad = padT + padB, pPlusTop = 0, pPlusBottom = 0,
+            itemStyle = el.style;
+        itemStyle.height = 0;
+        itemStyle.paddingTop = 0;
+        itemStyle.paddingBottom = 0;
+        el.dataset.slide = "down";
 
-        var effect = setInterval(function () {
-            h += parseFloat(hg / delay) * 3;
-            s.height = h + "px";
-            if (h > pad) {
-                s.color = "";
-                s.paddingTop = "";
-                s.paddingBottom = "";
+        let slideDown = () => {
+            i += Math.PI;
+            ItemHeightCollapse += heightDefault * Math.PI / delay;
+            pPlusBottom += padB * Math.PI / delay;
+            pPlusTop += padT * Math.PI / delay;
+            itemStyle.paddingBottom = pPlusBottom + "px";
+            itemStyle.paddingTop = pPlusTop + "px";
+            itemStyle.height = ItemHeightCollapse + "px";
+            if (i >= delay) {
+                itemStyle.cssText = "display:block";
+                window.clearInterval(run);
             }
-            if (h >= hg) {
-                window.clearInterval(effect);
-                setTimeout(function () {
-                    s.cssText = "";
-                    s.display = "block";
-                }, 1)
-            }
-        }, "fast")
-        return this.up;
+
+        };
+        let run = setInterval(slideDown, heightDefault / delay / 100);
+        return this;
 
     };
-    this.toggle = function (delay) {
-        this.setup(delay);
-        if (el.getAttribute("data-slide") == "up" || el.hasAttribute("data-slide") == false || el.offsetHeight < 1) {
+    this.toggle = (delay) => {
+        setup(delay);
+        if (el.dataset.slide === "up" || el.hasAttribute("data-slide") === false) {
             this.down(delay);
-        } else if (el.getAttribute("data-slide") == "down") {
+        } else if (el.dataset.slide === "down") {
             this.up(delay);
         }
         return this;
