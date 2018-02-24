@@ -1,52 +1,37 @@
-var fade = function(el) {
-  this.out = (delay) => {
-    if (!delay) {
-      delay = 400;
-    }
-    var h;
-    if (!window.getComputedStyle(el).opacity) {
-      h = 1;
-    } else {
-      h = window.getComputedStyle(el).opacity;
-    }
+var fade =  (el) => {
+            this.out = (duration) => {
+                if (!duration) {
+                    duration = 400;
+                }
+                el.animate([
+                    {opacity:1},
+                    {opacity:0},
+                ],{
+                   duration:duration
+                });
 
-    var effect = setInterval(() => {
-      if (h < 0.1) {
-        el.style.opacity = 0;
-        window.clearInterval(effect);
-      } else {
-        h -= 0.1;
-        el.style.opacity = h;
-      }
-    }, delay / 7);
+                return this;
+            };
+            this.in =(duration) => {
+                if (!duration) {
+                    duration = 400;
+                }
+                el.animate([
+                    {opacity:0},
+                    {opacity:1},
+                ],{
+                    duration:duration
+                });
 
-    return this;
-  };
-  this. in = function(delay) {
-    if (!delay) {
-      delay = 400;
-    }
-    var h = 0;
-    el.style.opacity = 0;
-    var effect = setInterval(function() {
-      h += 0.1;
-      if (h > 1) {
-        window.clearInterval(effect)
-      } else {
-        el.style.opacity = h;
-      }
-    }, delay / 7);
-
-    return this;
-  };
-  this.toggle = (delay) => {
-    if (window.getComputedStyle(el).opacity > 0) {
-      this.out(delay);
-    } else {
-      this. in (delay);
-    }
-
-    return this;
-  };
-  return this;
-};
+                return this;
+            };
+            this.toggle = (delay) => {
+                if (window.getComputedStyle(el).opacity > 0) {
+                    this.out(delay);
+                } else {
+                    this.in(delay);
+                }
+                return this;
+            };
+            return this;
+        };
